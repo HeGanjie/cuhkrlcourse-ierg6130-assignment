@@ -39,9 +39,8 @@ The files you need to take a look and fulfill are:
 3. `core/ppo_trainer.py` - PPO algorithm
 4. `core/buffer.py` - Supporting data structure for both A2C and PPO (GAE is implemented here)
 5. `core/utils/utils.py` - Implement `step_envs`
-6. `train.py` - Train scripts for A2C and PPO in CartPole-v0 and Pong
-7. `train_competitive.py` - Train PPO in competitive environment
-8. `this_is_my_agent.py` - Implement `student_compute_action_function`
+6. `train.py` - Train scripts for A2C and PPO in CartPole, Pong and competitive environment
+7. `this_is_my_agent.py` - Implement `student_compute_action_function`
 
 
 ### Deliverable
