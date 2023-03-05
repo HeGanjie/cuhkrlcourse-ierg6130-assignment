@@ -19,7 +19,7 @@ import argparse
 import os.path as osp
 
 import numpy as np
-from competitive_pong import evaluate_two_policies, make_envs, \
+from competitive_rl import evaluate_two_policies, make_envs, \
     get_builtin_agent_names, get_compute_action_function
 
 from load_agents import PolicyAPI

@@ -10,6 +10,7 @@ Instructor: Professor ZHOU Bolei. Assignment author: PENG Zhenghao.
 """
 import torch
 from torch import optim
+import torch.nn.functional as F
 
 from .base_trainer import BaseTrainer
 from .buffer import A2CRolloutStorage
@@ -64,18 +65,19 @@ class A2CTrainer(BaseTrainer):
         action_log_probs = action_log_probs.view(num_steps, num_processes, 1)
 
         # [TODO] Get the unnormalized advantages
-        advantages = None
-        pass
+        # advantages = Q - V
+        rets = rollouts.returns[:-1]
+        advantages = rets - values
 
         # [TODO] Get the value loss
-        value_loss = None
-        pass
+        value_loss = F.mse_loss(values, rets)
 
         # [TODO] Normalize the advantages
-        pass
+        advantages = (advantages - advantages.mean()) / max(advantages.std(), 1e-6)
 
         # [TODO] Get the policy loss
-        policy_loss = None
+        # loss = -(log_probs * advantages).sum(dim=-1).mean()
+        policy_loss = -(action_log_probs * advantages.detach()).sum(dim=1).mean()
 
         # Get the total loss
         loss = policy_loss + self.value_loss_weight * value_loss - \
@@ -88,7 +90,10 @@ class A2CTrainer(BaseTrainer):
             rollout)
         # [TODO] Step self.optimizer by computing the gradient of total loss
         # Hint: remember to clip the gradient to self.grad_norm_max
-        pass
+        self.optimizer.zero_grad()
+        total_loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_norm_max)
+        self.optimizer.step()
 
         return action_loss.item(), value_loss.item(), dist_entropy.item(), \
                total_loss.item()

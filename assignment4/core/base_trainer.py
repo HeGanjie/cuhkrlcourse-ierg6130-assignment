@@ -62,7 +62,7 @@ class BaseTrainer:
     def compute_action(self, obs, deterministic=False):
         if isinstance(obs, np.ndarray):
             obs = torch.from_numpy(obs).to(self.device)
-        logits, values = self.model(obs)
+        logits, values = self.model(obs) # envs * act;  envs * 1
 
         # [TODO] Get the action and action's log probabilities based on the
         #  output logits
@@ -71,9 +71,13 @@ class BaseTrainer:
         #   2. Remember to check the shape of action and log prob.
         #   3. When deterministic is True, return the action with maximum
         #    probability
-        actions = None
-        action_log_probs = None
-        pass
+        m = Categorical(logits=logits)
+        if deterministic:
+            actions = torch.argmax(logits, dim=1) # envs * 1
+            action_log_probs = m.log_prob(actions) # envs * 1
+        else:
+            actions = m.sample() # envs
+            action_log_probs = m.log_prob(actions) # envs * 1
 
         return values.view(-1, 1), actions.view(-1, 1), action_log_probs.view(
             -1, 1)
@@ -81,15 +85,17 @@ class BaseTrainer:
     def evaluate_actions(self, obs, act):
         """Run models to get the values, log probability and action
         distribution entropy of the action in current state"""
-        logits, values = self.model(obs)
+        logits, values = self.model(obs) # envs * act; envs * 1
         # [TODO] Get the log probability of specified action, and the entropy of
         #  current distribution w.r.t. the output logits.
         # Hint: Use proper distribution to help you
-        action_log_probs = None
-        dist_entropy = None
-        pass
+        m = Categorical(logits=logits)
+        action_log_probs = m.log_prob(act.squeeze())  # envs * 1
+        dist_entropy = m.entropy().mean()
 
-        assert dist_entropy.shape == ()
+        assert not torch.isnan(dist_entropy).any()
+        assert dist_entropy.shape == (),\
+            f'obs shape: {obs.shape}, act shape {act.shape}, logits shape: {logits.shape}, log probs shape: {action_log_probs.shape}, entropy shape: {dist_entropy.shape}'
         return values.view(-1, 1), action_log_probs.view(-1, 1), dist_entropy
 
     def compute_values(self, obs):

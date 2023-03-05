@@ -21,9 +21,9 @@ import argparse
 
 import pandas as pd
 import tabulate
-from competitive_pong import PrintConsole, make_envs, get_builtin_agent_names, \
+from competitive_rl import PrintConsole, make_envs, get_builtin_agent_names, \
     get_compute_action_function
-from competitive_pong.evaluate import evaluate_two_policies_in_batch
+from competitive_rl import evaluate_two_policies_in_batch
 
 from this_is_my_agent import student_compute_action_function
 
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     print("All agents ready: ", agents.keys())
 
     envs = make_envs(
-        "CompetitivePongDouble-v0", num_envs=num_envs, asynchronous=True)
+        "cPongDouble-v0", num_envs=num_envs, asynchronous=True)
     print("Environment ready")
 
     result = launch("MY_AGENT", student_compute_action_function(num_envs),

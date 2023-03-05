@@ -14,7 +14,7 @@ evaluation.
 of Information Engineering, The Chinese University of Hong Kong. Course
 Instructor: Professor ZHOU Bolei. Assignment author: PENG Zhenghao.
 """
-from competitive_pong import make_envs
+from competitive_rl import make_envs
 
 from core.ppo_trainer import PPOTrainer, ppo_config
 from core.utils import FrameStackTensor

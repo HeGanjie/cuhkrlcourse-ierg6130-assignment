@@ -32,7 +32,7 @@ import argparse
 
 import pandas as pd
 import tabulate
-from competitive_pong import make_envs, get_builtin_agent_names, \
+from competitive_rl import make_envs, get_builtin_agent_names, \
     get_compute_action_function
 
 import this_is_my_agent
@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
     # ===== Setup environment =====
     envs = make_envs(
-        "CompetitivePongDouble-v0", num_envs=num_envs, asynchronous=True)
+        "cPongDouble-v0", num_envs=num_envs, asynchronous=True)
     print("Environment ready")
 
     # ===== Run Matches =====
