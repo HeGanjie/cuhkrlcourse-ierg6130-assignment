@@ -38,8 +38,8 @@ def student_compute_action_function(num_envs=1):
     Run this file directly to make sure everything is fine.
     """
     # [TODO] rewrite this function
-    my_agent_log_dir = ""
-    my_agent_suffix = ""
+    my_agent_log_dir = "./data/a2c_01/A2C"
+    my_agent_suffix = "iter2000"
 
     checkpoint_path = osp.join(my_agent_log_dir,
                                "checkpoint-{}.pkl".format(my_agent_suffix))
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     assert args.right in agent_names, agent_names
 
     env = make_envs(
-        "CompetitivePongDouble-v0", num_envs=1, asynchronous=False).envs[0]
+        "cPongDouble-v0", num_envs=1, asynchronous=False, frame_stack=None).envs[0]
 
     if args.left != "MY_AGENT":
         left = get_compute_action_function(args.left)
